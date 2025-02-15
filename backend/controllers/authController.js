@@ -46,13 +46,13 @@ exports.login = async (req, res) => {
   }
 };
 
-// Verify Token
 exports.verifyToken = (req, res) => {
-  const token = req.headers['x-auth-token'];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
-
-  jwt.verify(token, process.env.SECRET, (err, decoded) => {
-    if (err) return res.status(401).json({ message: 'Invalid token' });
-    res.status(200).json({ userId: decoded.userId });
-  });
-};
+    const token = req.params.token;
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+  
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      if (err) return res.status(401).json({ message: 'Invalid token' });
+      res.status(200).json({ userId: decoded.userId });
+    });
+  };
+  

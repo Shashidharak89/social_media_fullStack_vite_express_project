@@ -7,7 +7,7 @@ const { register, login, verifyToken } = require('../controllers/authController'
 router.post('/signup', register);
 router.post('/login', login);
 
-// Protected Route
-router.get('/verify', verifyToken);
+// Protected Route with Token as URL Parameter
+router.get('/verify/:token', verifyToken);
 
 module.exports = router;
