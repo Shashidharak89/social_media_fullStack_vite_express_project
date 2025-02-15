@@ -12,7 +12,7 @@ dist/
 backend/.env
 
 # Vite environment variables
-frontend/.env
+.env
 
 
 
