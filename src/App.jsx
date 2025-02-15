@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './components/Login';
 import VerifyToken from './components/VerifyToken';
-import Signup from './components/SignUp';
+import Signup from './components/Signup';
 
 const App = () => {
   return (
