@@ -1,15 +1,23 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors'); // Import CORS
+
 const app = express();
 app.use(express.json());
+
+// Configure CORS
+app.use(cors({
+  origin: 'http://localhost:5173', // Your Vite frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes);
 
-
-// Connect to MongoDB (Cleaned up)
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log('MongoDB connection error:', err));
