@@ -17,12 +17,12 @@ const App = () => {
       <Navbar />
       <VerifyToken/>
       <PageLoad/>
-      <Chat/>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/profile" element={<Profile/>} />
         <Route path="/userslist" element={<UserList/>} />
+        <Route path="/chat" element={<Chat/>} />
       </Routes>
       <BottomNavbar/>
     </Router>
