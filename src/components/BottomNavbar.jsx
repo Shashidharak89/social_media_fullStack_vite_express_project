@@ -10,7 +10,7 @@ const BottomNavbar = () => {
         <AiFillHome className="icon" />
         <span>Home</span>
       </NavLink>
-      <NavLink to="/search" className="nav-item" activeClassName="active">
+      <NavLink to="/userslist" className="nav-item" activeClassName="active">
         <AiOutlineSearch className="icon" />
         <span>Search</span>
       </NavLink>

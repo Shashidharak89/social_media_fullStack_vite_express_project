@@ -18,7 +18,8 @@ exports.register = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'User already exists' });
 
-    const newUser = new User({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET, { expiresIn: '1h' });
@@ -76,6 +77,17 @@ exports.verifyToken = (req, res) => {
   });
 };
 
-exports.pageload=(req,res)=>{
+// Page Load
+exports.pageload = (req, res) => {
   res.status(200).send(true);
-}
+};
+
+// Get All Users (except passwords)
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, '-password'); // Exclude password field
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
