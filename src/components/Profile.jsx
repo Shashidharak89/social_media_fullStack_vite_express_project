@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './styles/Profile.css';
+import AuthContext from '../contexts/AuthContext';
 
 const Profile = () => {
+const {userId,username,mail}=useContext(AuthContext);
+
   const user = {
-    userId: '12345',
-    name: 'John Doe',
-    email: 'johndoe@example.com',
+    userId: userId,
+    name: username,
+    email: mail,
     profileImage: 'https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-business-user-profile-vector-png-image_1541960.jpg' // Dummy image source
   };
 
