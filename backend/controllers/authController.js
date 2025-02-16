@@ -75,3 +75,7 @@ exports.verifyToken = (req, res) => {
     }
   });
 };
+
+exports.pageload=(req,res)=>{
+  res.status(200).send(true);
+}

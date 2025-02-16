@@ -7,12 +7,14 @@ import VerifyToken from './components/VerifyToken';
 import Signup from './components/Signup';
 import BottomNavbar from './components/BottomNavbar';
 import Profile from './components/Profile';
+import PageLoad from './components/PageLoad';
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <VerifyToken/>
+      <PageLoad/>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup/>} />
