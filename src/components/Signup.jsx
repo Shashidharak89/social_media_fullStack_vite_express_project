@@ -14,6 +14,7 @@ const Signup = () => {
 
 
   const {URl}=useContext(AuthContext);
+  console.log(URL);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
