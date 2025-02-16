@@ -11,17 +11,25 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const {URL, userId, setUserId,
-    username, setUsername,
-    mail, setMail}=useContext(AuthContext);
+  const {
+    URL,
+    setUserId,
+    setUsername,
+    setMail
+  } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear previous error
+
     try {
-      const response = await axios.post(URL+'/api/auth/login', {
-        email,
-        password
-      });
+      // Check what's being sent
+      console.log('Sending Data:', { email, password });
+
+      const response = await axios.post(`${URL}/api/auth/login`, 
+        { email, password },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
 
       // Store the token in local storage
       const token = response.data.token;
@@ -30,10 +38,14 @@ const Login = () => {
       console.log('Login Successful:', response.data);
       alert('Login Successful!');
 
-      navigate('/'); // Redirect to Home page on successful login
+      // Set user context data
       setUserId(response.data.userId);
       setUsername(response.data.name);
       setMail(response.data.email);
+
+      // Redirect to Home page on successful login
+      navigate('/');
+
     } catch (err) {
       console.error('Login Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Login failed. Please try again.');

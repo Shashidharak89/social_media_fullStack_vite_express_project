@@ -1,35 +1,30 @@
+// controllers/authController.js
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection failed:', err));
 
 // Register User
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    // Create a new user and save
+    const newUser = new User({ name, email, password });
     await newUser.save();
 
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET, { expiresIn: '1h' });
-    res.status(201).json({ 
+    res.status(201).json({
       token,
-      userId: newUser._id, 
-      name: newUser.name, 
-      email: newUser.email 
+      userId: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
     });
   } catch (error) {
+    console.error('Registration Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -41,17 +36,19 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
+    // Compare plain text password with hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '1h' });
-    res.status(200).json({ 
-      token, 
+    res.status(200).json({
+      token,
       userId: user._id,
-      name: user.name, 
-      email: user.email 
+      name: user.name,
+      email: user.email,
     });
   } catch (error) {
+    console.error('Login Error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -68,10 +65,10 @@ exports.verifyToken = (req, res) => {
       const user = await User.findById(decoded.userId);
       if (!user) return res.status(404).json({ message: 'User not found' });
 
-      res.status(200).json({ 
+      res.status(200).json({
         userId: decoded.userId,
-        name: user.name, 
-        email: user.email 
+        name: user.name,
+        email: user.email,
       });
     } catch (error) {
       res.status(500).json({ message: 'Server error' });
