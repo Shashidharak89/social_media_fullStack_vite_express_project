@@ -31,9 +31,10 @@ const sendMessage = async (req, res) => {
     // Sort IDs to maintain consistency
     const members = [senderId, receiverId].sort();
 
-    // Find or create a conversation
+    // Find conversation
     let conversation = await Conversation.findOne({ members });
 
+    // If no conversation, create a new one and add the message
     if (!conversation) {
       conversation = new Conversation({ members, messages: [] });
     }
@@ -74,4 +75,44 @@ const getMessages = async (req, res) => {
   }
 };
 
-module.exports = { createOrGetConversation, sendMessage, getMessages };
+// Create a new conversation after sending a message if none exists
+const createNewConversation = async (req, res) => {
+  try {
+    const { senderId, receiverId, senderUsername, message } = req.body;
+
+    // Sort IDs to ensure uniqueness regardless of order
+    const members = [senderId, receiverId].sort();
+
+    // Check if a conversation already exists between the two users
+    let conversation = await Conversation.findOne({ members });
+
+    if (conversation) {
+      return res.status(400).json({ message: "Conversation already exists" });
+    }
+
+    // Create a new conversation and add the first message
+    conversation = new Conversation({
+      members,
+      messages: [
+        {
+          senderId,
+          senderUsername,
+          message,
+          timestamp: new Date(),
+        },
+      ],
+    });
+
+    await conversation.save();
+    res.status(201).json(conversation);
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong", details: error });
+  }
+};
+
+module.exports = {
+  createOrGetConversation,
+  sendMessage,
+  getMessages,
+  createNewConversation, // Export the new function
+};

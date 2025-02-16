@@ -7,10 +7,10 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [receiverName, setReceiverName] = useState("");
+  const [conversationId, setConversationId] = useState(null);
 
   const chatContainerRef = useRef(null);
-
-  const { URL } = useContext(AuthContext);
+  const { URL, userId } = useContext(AuthContext);
 
   const senderId = "64fa67c8f5d4e9b987654321";
   const receiverId = "64fa67c8f5d4e9b912345678";
@@ -22,16 +22,20 @@ const Chat = () => {
         const response = await axios.get(
           `${URL}/api/conversations/${senderId}/${receiverId}`
         );
-        setMessages(response.data);
+        if (response.data.length > 0) {
+          setMessages(response.data);
+          setConversationId(response.data[0]._id);
 
-        // Get the receiver's name from the latest message
-        const receiverMsg = response.data.find(
-          (msg) => msg.senderId === receiverId
-        );
-        if (receiverMsg) {
-          setReceiverName(receiverMsg.senderUsername);
+          const receiverMsg = response.data.find(
+            (msg) => msg.senderId === receiverId
+          );
+          if (receiverMsg) {
+            setReceiverName(receiverMsg.senderUsername);
+          }
+        } else {
+          setMessages([]);
+          setConversationId(null); // Clear conversation ID if no conversation exists
         }
-
         scrollToBottom();
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -42,23 +46,34 @@ const Chat = () => {
   }, []);
 
   const scrollToBottom = () => {
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   };
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
 
-    const messageData = {
-      senderId,
-      receiverId,
-      senderUsername,
-      message: newMessage,
-    };
-
     try {
+      // If no conversation exists, create one
+      if (!conversationId) {
+        const convResponse = await axios.post(`${URL}/api/conversations`, {
+          senderId,
+          receiverId,
+        });
+        setConversationId(convResponse.data._id);
+      }
+
+      // Send the message in the conversation
+      const messageData = {
+        senderId,
+        receiverId,
+        senderUsername,
+        message: newMessage,
+      };
+
       await axios.post(`${URL}/api/conversations/message`, messageData);
 
-      // Update chat with new message
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -67,6 +82,7 @@ const Chat = () => {
           timestamp: new Date().toISOString(),
         },
       ]);
+
       setNewMessage("");
       scrollToBottom();
     } catch (error) {
@@ -77,7 +93,7 @@ const Chat = () => {
   return (
     <div className="chat-wrapper">
       <div className="chat-header">
-        <h3>{receiverName}</h3>
+        <h3>{receiverName || "Chat"}</h3>
       </div>
       <div className="chat-container" ref={chatContainerRef}>
         {messages.map((msg) => (
