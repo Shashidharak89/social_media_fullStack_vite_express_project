@@ -1,0 +1,35 @@
+.bottom-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #222;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+  }
+  
+  .nav-item {
+    color: #ccc;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
+    flex-grow: 1;
+    transition: color 0.3s;
+  }
+  
+  .nav-item .icon {
+    font-size: 24px;
+  }
+  
+  .nav-item:hover {
+    color: #fff;
+  }
+  
+  .active {
+    color: #fff;
+  }
+  

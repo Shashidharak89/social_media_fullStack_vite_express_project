@@ -1,0 +1,38 @@
+.profile-card {
+    background: linear-gradient(135deg, #ff9800, #ffc107); /* Orange to Yellow */
+    border: 2px solid #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    max-width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+  
+  .profile-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .profile-image img {
+    border: 3px solid #fff;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .profile-details h2 {
+    color: #000; /* Black for name */
+    margin: 10px 0;
+  }
+  
+  .profile-details p {
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .profile-details p strong {
+    color: #000; /* Black for labels */
+  }
+  
