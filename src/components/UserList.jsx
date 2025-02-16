@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './styles/UserList.css';
+import AuthContext from '../contexts/AuthContext';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [visible, setVisible] = useState(10);
   const navigate = useNavigate();
 
+  const {URL}=useContext(AuthContext);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/api/auth/users');
+        const response = await axios.get(URL+'/api/auth/users');
         setUsers(response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
