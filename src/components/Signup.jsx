@@ -13,7 +13,7 @@ const Signup = () => {
   const navigate = useNavigate();
 
 
-  const {URl}=useContext(AuthContext);
+  const {URL}=useContext(AuthContext);
   console.log(URL);
   const handleSubmit = async (e) => {
     e.preventDefault();
