@@ -13,16 +13,26 @@ const Signup = () => {
   const navigate = useNavigate();
 
 
-  const {URL}=useContext(AuthContext);
+  const { URL, userId, setUserId,
+    username, setUsername,
+    mail, setMail } = useContext(AuthContext);
+
+
   console.log(URL);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(URL+'/api/auth/signup', {
+      const response = await axios.post(URL + '/api/auth/signup', {
         name,
         email,
         password
       });
+
+      const token = response.data.token;
+      localStorage.setItem('authToken', token);
+      setUserId(response.data.userId);
+      setUsername(response.data.name);
+      setMail(response.data.email);
       console.log('Signup Successful:', response.data);
       alert('Signup Successful! You can now log in.');
       navigate('/login'); // Redirect to the Login page after successful signup

@@ -11,7 +11,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const {URL}=useContext(AuthContext);
+  const {URL, userId, setUserId,
+    username, setUsername,
+    mail, setMail}=useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +29,11 @@ const Login = () => {
 
       console.log('Login Successful:', response.data);
       alert('Login Successful!');
+
       navigate('/'); // Redirect to Home page on successful login
+      setUserId(response.data.userId);
+      setUsername(response.data.name);
+      setMail(response.data.email);
     } catch (err) {
       console.error('Login Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Login failed. Please try again.');
