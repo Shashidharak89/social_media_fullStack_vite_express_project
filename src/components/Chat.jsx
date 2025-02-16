@@ -8,42 +8,48 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const [receiverName, setReceiverName] = useState("");
   const [conversationId, setConversationId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const chatContainerRef = useRef(null);
-  const { URL, userId } = useContext(AuthContext);
+  const { URL, userId,reciverId } = useContext(AuthContext);
 
-  const senderId = "64fa67c8f5d4e9b987654321";
-  const receiverId = "64fa67c8f5d4e9b912345678";
-  const senderUsername = "alice";
+  // Assign senderId and receiverId dynamically
+  const senderId = userId;
+  const receiverId = reciverId; // Modify to dynamically get from props or state
+  const senderUsername = "alice"; // You can dynamically get this if needed
 
+  // Wait for userId to be available before fetching messages
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get(
-          `${URL}/api/conversations/${senderId}/${receiverId}`
-        );
-        if (response.data.length > 0) {
-          setMessages(response.data);
-          setConversationId(response.data[0]._id);
-
-          const receiverMsg = response.data.find(
-            (msg) => msg.senderId === receiverId
+    if (userId) {
+      const fetchMessages = async () => {
+        try {
+          const response = await axios.get(
+            `${URL}/api/conversations/${senderId}/${receiverId}`
           );
-          if (receiverMsg) {
-            setReceiverName(receiverMsg.senderUsername);
-          }
-        } else {
-          setMessages([]);
-          setConversationId(null); // Clear conversation ID if no conversation exists
-        }
-        scrollToBottom();
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
+          if (response.data.length > 0) {
+            setMessages(response.data);
+            setConversationId(response.data[0]._id);
 
-    fetchMessages();
-  }, []);
+            const receiverMsg = response.data.find(
+              (msg) => msg.senderId === receiverId
+            );
+            if (receiverMsg) {
+              setReceiverName(receiverMsg.senderUsername);
+            }
+          } else {
+            setMessages([]);
+            setConversationId(null);
+          }
+          scrollToBottom();
+        } catch (error) {
+          console.error("Error fetching messages:", error);
+        }
+      };
+
+      fetchMessages();
+      setIsLoading(false); // Data is ready
+    }
+  }, [userId]); // Only trigger when userId changes
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -89,6 +95,11 @@ const Chat = () => {
       console.error("Error sending message:", error);
     }
   };
+
+  // Render loading state until userId is available
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="chat-wrapper">

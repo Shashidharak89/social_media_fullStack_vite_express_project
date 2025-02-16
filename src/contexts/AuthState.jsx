@@ -9,6 +9,7 @@ export const AuthState = ({ children }) => {
     const [userId, setUserId] = useState();
     const [username, setUsername] = useState();
     const [mail, setMail] = useState();
+    const [reciverId,setReciverId]=useState("64fa67c8f5d4e9b912345678");
 
 
 
@@ -17,7 +18,8 @@ export const AuthState = ({ children }) => {
             URL,
             userId, setUserId,
             username, setUsername,
-            mail, setMail
+            mail, setMail,
+            reciverId,setReciverId
         }}>
             {children}
         </AuthContext.Provider>
