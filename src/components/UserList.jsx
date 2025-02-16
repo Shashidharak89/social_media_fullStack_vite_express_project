@@ -35,6 +35,8 @@ const UserList = () => {
     <div className="user-list-container">
       <h2 className="user-list-title">User Names</h2>
       <ul className="user-list">
+
+
         {users.slice(0, visible).map((user, index) => (
           <li key={index} className="user-item">
             <span>{user.name}</span>
@@ -46,6 +48,8 @@ const UserList = () => {
             </button>
           </li>
         ))}
+
+        
       </ul>
       {visible < users.length && (
         <button className="view-more-button" onClick={handleViewMore}>
